@@ -23,8 +23,8 @@ UPDATE_EVERY_SECONDS: int = 10
 BOT_CONTACT_RETRY_DELAY_SECONDS: int = 5
 
 CMDS_OFF = ('off', 'aus')
-CMDS_UP = ('up', 'rauf', 'auf', 'hoch')
-CMDS_DOWN = ('down', 'runter', 'zu')
+CMDS_UP = ('up', 'rauf', 'auf', 'hoch', 'open')
+CMDS_DOWN = ('down', 'runter', 'zu', 'close', 'shut')
 CMDS_DAWN = ('dawn', 'dämmerung ein', 'dämmerung')
 CMDS_NODAWN = ('nodawn', 'dämmerung aus')
 CMDS_DEPRESSION_CIVIL = (
@@ -43,7 +43,7 @@ CMDS_DEPRESSION_ASTRO = (
 	'astronomical',
 	'astronomisch')
 CMDS_LATEST = {'latest', 'max', 'spätestens'}
-CMDS_STATUS = ('status', )
+CMDS_STATUS = ('status', 'settings', 'einstellungen')
 CMDS_HELP = ('help', 'hilfe')
 
 # The following commands represent only the leading part of the command
@@ -148,11 +148,12 @@ def is_isoformat_time(time_str):
 def telegram_message_handler(msg):
 	global allowed_telegram_usernames
 
-	message = msg['text'].lower().strip()
+	message = msg['text'].lower().strip() if 'text' in msg else ''
 	split_msg = message.split()
 	print(f'Msg received: {msg}')
 
-	if msg['from']['username'] in allowed_telegram_usernames:
+	if ('username' in msg['from']
+				and msg['from']['username'] in allowed_telegram_usernames):
 		# Save chat ID; will be used for sending subsequent messages
 		global allowed_chat_id
 		allowed_chat_id = msg['chat']['id']
